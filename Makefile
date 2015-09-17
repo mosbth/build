@@ -13,6 +13,7 @@ COMPOSER_PACKAGES = 					\
 NPM_PACKAGES = 							\
 	htmlhint							\
 	csslint								\
+	less								\
 
 APM_PACKAGES = 							\
 	linter 								\
@@ -33,15 +34,52 @@ APM_PACKAGES = 							\
 
 
 #
-# All
+# less
 #
-.PHONY: config install update
+SOURCE_LESS = app/less
+BUILD_CSS   = build/css
+TARGET_CSS  = htdocs/css
 
-config: npm-config
+.PHONY: less
+
+less:
+	install -d $(BUILD_CSS)
+	#lessc --clean-css app/css/style.less htdocs/css/style.css
+	lessc --include-path=$(SOURCE_LESS) $(SOURCE_LESS)/style.less $(BUILD_CSS)/style.css
+	install $(BUILD_CSS)/style.css $(TARGET_CSS)/style.css
+
+
+
+#
+# phpunit
+#
+.PHONY: phpunit
+
+phpunit:
+	phpunit --configuration .phpunit.xml
+
+
+
+#
+# phpdoc
+#
+.PHONY: phpdoc
+
+phpdoc:
+	phpdoc --config=.phpdoc.xml
+
+
+
+#
+# All developer tools
+#
+.PHONY: tools-config tools-install tools-update
+
+tools-config: npm-config
 	
-install: composer-require npm-install apm-install
+tools-install: composer-require npm-install apm-install
 
-update: composer-update npm-update apm-update
+tools-update: composer-update npm-update apm-update
 
 
 
@@ -83,4 +121,4 @@ apm-install:
 	apm install $(APM_PACKAGES)
 
 apm-update:
-	apm update
+	apm update --confirm=false
