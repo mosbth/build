@@ -30,9 +30,10 @@ Install & update devtools
 -----------------------------------
 
 ```
-make config
-make install
+# First time install
+make tools-config
+make tools-install
 
 # To keep updated
-make update
+make tools-update
 ```
