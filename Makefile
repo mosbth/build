@@ -13,6 +13,7 @@ COMPOSER_PACKAGES = 					\
 NPM_PACKAGES = 							\
 	htmlhint							\
 	csslint								\
+	jsonlint							\
 	less								\
 
 APM_PACKAGES = 							\
