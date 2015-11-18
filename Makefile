@@ -13,8 +13,14 @@ COMPOSER_PACKAGES = 					\
 NPM_PACKAGES = 							\
 	htmlhint							\
 	csslint								\
+	jshint								\
+	jscs								\
 	jsonlint							\
 	less								\
+	js-yaml								\
+	html-minifier						\
+	cleancss							\
+	uglify-js							\
 
 APM_PACKAGES = 							\
 	linter 								\
