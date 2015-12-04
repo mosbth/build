@@ -58,6 +58,26 @@ less:
 
 
 #
+# phpcs
+#
+.PHONY: phpcs
+
+phpcs:
+	phpcs --standard=.phpcs.xml app/ theme/ src/ test/
+
+
+
+#
+# phpcbf
+#
+.PHONY: phpcbf
+
+phpcbf:
+	phpcbf --standard=.phpcs.xml app/ theme/ src/ test/
+
+
+
+#
 # phpunit
 #
 .PHONY: phpunit
