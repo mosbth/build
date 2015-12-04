@@ -19,7 +19,7 @@ NPM_PACKAGES = 							\
 	less								\
 	js-yaml								\
 	html-minifier						\
-	cleancss							\
+	clean-css							\
 	uglify-js							\
 
 APM_PACKAGES = 							\
