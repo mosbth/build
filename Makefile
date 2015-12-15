@@ -3,12 +3,13 @@
 # Build and development environment using make
 #
 COMPOSER_PACKAGES = 					\
-	"phpunit/phpunit=4.*" 				\
-	"sebastian/phpcpd=2.*"				\
-	"phploc/phploc=2.*"					\
-	"phpdocumentor/phpdocumentor=2.*"	\
-	"squizlabs/php_codesniffer=2.*"		\
-	"phpmd/phpmd=@stable"				\
+	"phpunit/phpunit" 					\
+	"sebastian/phpcpd"					\
+	"phploc/phploc"						\
+	"phpdocumentor/phpdocumentor"		\
+	"squizlabs/php_codesniffer"			\
+	"phpmd/phpmd"						\
+	"behat/behat"						\
 
 NPM_PACKAGES = 							\
 	htmlhint							\
@@ -126,7 +127,7 @@ composer-update:
 #
 # npm
 #
-.PHONY: npm-config npm-installl npm-update
+.PHONY: npm-config npm-install npm-update
 
 npm-config: 
 	npm config set prefix '~/.npm-packages'
@@ -142,7 +143,7 @@ npm-update:
 #
 # apm
 #
-.PHONY: apm-installl apm-update
+.PHONY: apm-install apm-update
 
 apm-install: 
 	apm install $(APM_PACKAGES)
