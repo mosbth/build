@@ -114,13 +114,17 @@ tools-update: composer-update npm-update apm-update
 #
 # composer
 #
-.PHONY: composer-require composer-update
+.PHONY: composer-require composer-update composer-remove
 
 composer-require: 
 	composer --sort-packages --update-no-dev global require $(COMPOSER_PACKAGES)
 
 composer-update:
 	composer --no-dev global update
+
+composer-remove:
+	rm -rf $(HOME)/.composer/composer.lock
+	rm -rf $(HOME)/.composer/vendor
 
 
 
