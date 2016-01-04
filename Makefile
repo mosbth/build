@@ -22,6 +22,7 @@ NPM_PACKAGES = 							\
 	html-minifier						\
 	clean-css							\
 	uglify-js							\
+	less-plugin-clean-css				\
 
 APM_PACKAGES = 							\
 	linter 								\
