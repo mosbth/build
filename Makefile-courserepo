@@ -27,6 +27,13 @@ help:
 
 
 
+# target: test          - Install test tools & run tests.
+.PHONY: test
+test: automated-tests-prepare automated-tests-check automated-tests-run dbwebb-testrepo
+	@echo "$(ACTION)Installed test tools & executed tests$(NO_COLOR)"
+
+
+
 # target: build-prepare - Prepare the build directory.
 .PHONY: build-prepare
 build-prepare:
@@ -160,7 +167,7 @@ automated-tests-prepare: build-prepare dbwebb-validate-install dbwebb-install np
 
 
 
-# target: automated-tests-check   - Check version and enviroment for automated tests.
+# target: automated-tests-check   - Check version and environment for automated tests.
 .PHONY: automated-tests-check
 automated-tests-check: dbwebb-validate-check
 	@echo "$(ACTION)Checked version and environment for automated tests$(NO_COLOR)"
@@ -171,13 +178,6 @@ automated-tests-check: dbwebb-validate-check
 .PHONY: automated-tests-run
 automated-tests-run: dbwebb-validate-run dbwebb-testrepo
 	@echo "$(ACTION)Executed all automated tests$(NO_COLOR)"
-
-
-
-# target: test                    - Install test tools & run tests.
-.PHONY: test
-test: automated-tests-prepare automated-tests-check automated-tests-run dbwebb-testrepo
-	@echo "$(ACTION)Installed test tools & executed tests$(NO_COLOR)"
 
 
 
