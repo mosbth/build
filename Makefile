@@ -24,6 +24,9 @@ NPM_PACKAGES = 							\
 	uglify-js							\
 	less-plugin-clean-css				\
 
+#babel-core babel-loader babel-cli babel-preset-es2015  babel-loader
+#webpack
+
 APM_PACKAGES = 							\
 	linter 								\
 	linter-htmlhint 					\

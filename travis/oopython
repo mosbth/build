@@ -1,0 +1,76 @@
+language: python
+
+python:
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.5-dev" # 3.5 development branch
+  - "nightly" # currently points to 3.6-dev
+
+
+
+# command to install dependencies
+#install: "pip install -r requirements.txt"
+
+
+
+# command to run tests
+#script: nosetests
+
+
+
+sudo: false
+
+
+
+git:
+    submodules: false
+
+
+
+addons:
+    apt:
+        packages:
+            #- pylint
+            #- php-codesniffer
+            #- phpmd
+            #- shellcheck
+
+
+
+matrix:
+    allow_failures:
+        - python: "3.2"
+        - python: "nightly"
+
+
+
+before_script:
+    # install pylint
+    - pip3 install pylint
+ 
+    # Prepare for automated tests
+    - make automated-tests-prepare
+
+
+script:
+    # Check version and environment
+    - make automated-tests-check
+
+    # Run tests
+    - make automated-tests-run
+
+
+
+notifications:
+    irc: "irc.freenode.org#dbwebb"
+
+    webhooks:
+        urls:
+            - https://webhooks.gitter.im/e/d9c52b8ba1381b30286f
+
+        # options: [always|never|change] default: always
+        on_success: change
+        on_failure: always
+        on_start: never

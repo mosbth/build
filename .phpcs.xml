@@ -1,29 +1,26 @@
 <?xml version="1.0"?>
-<ruleset name="PHPCS rule set">
-    <description>Custom rule set.</description>
+<ruleset name="PHPCS rule set"
+         xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0
+                     http://pmd.sf.net/ruleset_xml_schema.xsd"
+         xsi:noNamespaceSchemaLocation="
+                     http://pmd.sf.net/ruleset_xml_schema.xsd">
+    <description>
+        Custom rule set for course repo.
+    </description>
 
-    <file>.</file>
-    <file>test</file>
-    <file>vendor/autoload.php</file>
-
-    <exclude-pattern>docs/*</exclude-pattern>
-    <exclude-pattern>build/*</exclude-pattern>
-    <exclude-pattern>vendor/*</exclude-pattern>
-
-<!--
     <arg name="encoding" value="utf-8"/>
-    <arg name="show_warnings" value="1"/>
-    <arg name="colors" value="1"/>
-    <arg name="tab_width" value="4"/>
-    
--->
-    <!--<arg name="extensions" value=".php"/>-->
-    <!--<arg name="warning-severity" value="5"/>-->
+    <arg name="warning-severity" value="0"/>
 
     <rule ref="PSR2">
-<!--
-        <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace" />         <exclude name="Squiz.Commenting.FileComment" />
+        <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace" />
         <exclude name="Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace" />
-    -->
+
+        <!-- Below may be removed for a rougher check -->
+        <exclude name="Squiz.WhiteSpace.SuperfluousWhitespace" />
+        <exclude name="Squiz.WhiteSpace.ControlStructureSpacing.SpacingAfterOpen" />    
+        <exclude name="Squiz.WhiteSpace.ControlStructureSpacing.SpacingBeforeClose" />  
     </rule>
+    
 </ruleset>
