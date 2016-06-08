@@ -1,160 +1,191 @@
 #!/usr/bin/make -f
 #
-# Build and development environment using make
+# Makefile for course repos
 #
-COMPOSER_PACKAGES = 					\
-	"phpunit/phpunit" 					\
-	"sebastian/phpcpd"					\
-	"phploc/phploc"						\
-	"phpdocumentor/phpdocumentor"		\
-	"squizlabs/php_codesniffer"			\
-	"phpmd/phpmd"						\
-	"behat/behat"						\
 
-NPM_PACKAGES = 							\
-	htmlhint							\
-	csslint								\
-	jshint								\
-	jscs								\
-	jsonlint							\
-	less								\
-	js-yaml								\
-	html-minifier						\
-	clean-css							\
-	uglify-js							\
-	less-plugin-clean-css				\
+# Colors
+NO_COLOR		= \033[0m
+TARGET_COLOR	= \033[32;01m
+OK_COLOR		= \033[32;01m
+ERROR_COLOR		= \033[31;01m
+WARN_COLOR		= \033[33;01m
+ACTION			= $(TARGET_COLOR)--> 
 
-#babel-core babel-loader babel-cli babel-preset-es2015  babel-loader
-#webpack
-
-APM_PACKAGES = 							\
-	linter 								\
-	linter-htmlhint 					\
-	linter-csslint 						\
-	linter-less 						\
-	linter-jscs 						\
-	linter-jshint 						\
-	linter-pep8 						\
-	linter-pylint 						\
-	linter-php 							\
-	linter-phpcs 						\
-	linter-phpmd 						\
-	linter-shellcheck 					\
-	linter-xmllint						\
-	block-travel 						\
+# Add local bin path for test tools
+BIN 		= bin
+VENDORBIN 	= vendor/bin
+NPMBIN		= node_modules/.bin
+PATH		:= $(BIN):$(VENDORBIN):$(NPMBIN):$(PATH)
 
 
 
-#
-# less
-#
-SOURCE_LESS = app/less
-BUILD_CSS   = build/css
-TARGET_CSS  = htdocs/css
-
-.PHONY: less
-
-less:
-	install -d $(BUILD_CSS)
-	#lessc --clean-css app/css/style.less htdocs/css/style.css
-	lessc --include-path=$(SOURCE_LESS) $(SOURCE_LESS)/style.less $(BUILD_CSS)/style.css
-	install $(BUILD_CSS)/style.css $(TARGET_CSS)/style.css
+# target: help          - Displays help.
+.PHONY:  help
+help:
+	@echo "$(ACTION)Displaying help for this Makefile.$(NO_COLOR)"
+	@echo "Usage:"
+	@echo " make [target] ..."
+	@echo "target:"
+	@egrep "^# target:" Makefile | sed 's/# target: / /g'
 
 
 
-#
-# phpcs
-#
-.PHONY: phpcs
-
-phpcs:
-	phpcs --standard=.phpcs.xml app/ theme/ src/ test/
-
-
-
-#
-# phpcbf
-#
-.PHONY: phpcbf
-
-phpcbf:
-	phpcbf --standard=.phpcs.xml app/ theme/ src/ test/
+# target: build-prepare - Prepare the build directory.
+.PHONY: build-prepare
+build-prepare:
+	@echo "$(ACTION)Prepare the build directory$(NO_COLOR)"
+	install -d build
+	install -d bin/pip
 
 
 
-#
-# phpunit
-#
-.PHONY: phpunit
-
-phpunit:
-	phpunit --configuration .phpunit.xml
-
-
-
-#
-# phpdoc
-#
-.PHONY: phpdoc
-
-phpdoc:
-	phpdoc --config=.phpdoc.xml
+# target: clean         - Remove all generated files.
+.PHONY:  clean
+clean:
+	@echo "$(ACTION)Remove all generated files$(NO_COLOR)"
+	rm -rf build
+	rm -f npm-debug.log
 
 
 
-#
-# All developer tools
-#
-.PHONY: tools-config tools-install tools-update
-
-tools-config: npm-config
-	
-tools-install: composer-require npm-install apm-install
-
-tools-update: composer-update npm-update apm-update
+# target: clean-me      - Remove me-directory.
+.PHONY:  clean-me
+clean-me:
+	@echo "$(ACTION)Remove me-directory$(NO_COLOR)"
+	rm -rf me
 
 
 
-#
-# composer
-#
-.PHONY: composer-require composer-update composer-remove
-
-composer-require: 
-	composer --sort-packages --update-no-dev global require $(COMPOSER_PACKAGES)
-
-composer-update:
-	composer --no-dev global update
-
-composer-remove:
-	rm -rf $(HOME)/.composer/composer.lock
-	rm -rf $(HOME)/.composer/vendor
+# target: clean-all     - Remove all installed files.
+.PHONY:  clean-all
+clean-all: clean
+	@echo "$(ACTION)Remove all installed files$(NO_COLOR)"
+	rm -rf bin
+	rm -rf node_modules
+	rm -rf vendor
 
 
 
-#
-# npm
-#
-.PHONY: npm-config npm-install npm-update
-
-npm-config: 
-	npm config set prefix '~/.npm-packages'
-	
-npm-install: 
-	npm -g install $(NPM_PACKAGES)
-
-npm-update: 
-	npm -g update
+# target: dbwebb-install          - Download and install dbwebb-cli.
+.PHONY: dbwebb-install
+dbwebb-install: build-prepare
+	@echo "$(ACTION)Download and install dbwebb$(NO_COLOR)"
+	wget --quiet -O $(BIN)/dbwebb https://raw.githubusercontent.com/mosbth/dbwebb-cli/master/dbwebb2
+	chmod 755 $(BIN)/dbwebb
+	$(BIN)/dbwebb config create noinput && $(BIN)/dbwebb --version
 
 
 
-#
-# apm
-#
-.PHONY: apm-install apm-update
+# target: dbwebb-testrepo         - Test course repo.
+.PHONY: dbwebb-testrepo
+dbwebb-testrepo: dbwebb-install
+	@echo "$(ACTION)Test course repo$(NO_COLOR)"
+	PATH=$(PATH); $(BIN)/dbwebb --silent --local testrepo
 
-apm-install: 
-	apm install $(APM_PACKAGES)
 
-apm-update:
-	apm update --confirm=false
+
+# target: dbwebb-validate-install - Download and install dbwebb-validate.
+.PHONY: dbwebb-validate-install
+dbwebb-validate-install: build-prepare
+	@echo "$(ACTION)Download and install dbwebb-validate$(NO_COLOR)"
+	wget --quiet -O $(BIN)/dbwebb-validate https://raw.githubusercontent.com/mosbth/dbwebb-cli/master/dbwebb2-validate
+	chmod 755 $(BIN)/dbwebb-validate
+	$(BIN)/dbwebb-validate --version
+
+
+
+# target: dbwebb-validate-check   - Check version and environment for dbwebb-validate.
+.PHONY: dbwebb-validate-check
+dbwebb-validate-check:
+	@echo "$(ACTION)Check version and environment for dbwebb-validate$(NO_COLOR)"
+	$(BIN)/dbwebb-validate --version && $(BIN)/dbwebb-validate --check
+
+
+
+# target: dbwebb-validate-run     - Run tests with dbwebb-validate.
+.PHONY: dbwebb-validate-run
+dbwebb-validate-run:
+	@echo "$(ACTION)Run tests with dbwebb-validate$(NO_COLOR)"
+	$(BIN)/dbwebb-validate --publish --publish-to build/webroot/ example
+
+
+
+# target: npm-install-dev - Install npm packages for development.
+.PHONY: npm-install-dev
+npm-install-dev: build-prepare
+	@echo "$(ACTION)Install npm packages for development$(NO_COLOR)"
+	if [ -f package.json ]; then npm install --only=dev; fi
+
+
+
+# target: npm-update-dev  - Update npm packages for development.
+.PHONY: npm-update-dev
+npm-update-dev:
+	@echo "$(ACTION)Update npm packages for development$(NO_COLOR)"
+	if [ -f package.json ]; then npm update --only=dev; fi
+
+
+
+# target: composer-install-dev - Install composer packages for development.
+.PHONY: composer-install-dev
+composer-install-dev: build-prepare
+	@echo "$(ACTION)Install composer packages for development$(NO_COLOR)"
+	if [ -f composer.json ]; then composer install; fi
+
+
+
+# target: composer-update-dev  - Update composer packages for development.
+.PHONY: composer-update-dev
+composer-update-dev:
+	@echo "$(ACTION)Update composer packages for development$(NO_COLOR)"
+	if [ -f composer.json ]; composer update; fi
+
+
+
+# target: tools-install-dev - Install tools for development.
+.PHONY: tools-install-dev
+tools-install-dev: build-prepare composer-install-dev npm-install-dev
+	@echo "$(ACTION)Install tools for development$(NO_COLOR)"
+
+
+
+# target: tools-update-dev  - Update tools for development.
+.PHONY: tools-update-dev
+tools-update-dev: composer-update-dev npm-update-dev
+	@echo "$(ACTION)Update tools for development$(NO_COLOR)"
+
+
+
+# target: automated-tests-prepare - Prepare for automated tests.
+.PHONY: automated-tests-prepare
+automated-tests-prepare: build-prepare dbwebb-validate-install dbwebb-install npm-install-dev composer-install-dev
+	@echo "$(ACTION)Prepared for automated tests$(NO_COLOR)"
+
+
+
+# target: automated-tests-check   - Check version and enviroment for automated tests.
+.PHONY: automated-tests-check
+automated-tests-check: dbwebb-validate-check
+	@echo "$(ACTION)Checked version and environment for automated tests$(NO_COLOR)"
+
+
+
+# target: automated-tests-run     - Run all automated tests.
+.PHONY: automated-tests-run
+automated-tests-run: dbwebb-validate-run dbwebb-testrepo
+	@echo "$(ACTION)Executed all automated tests$(NO_COLOR)"
+
+
+
+# target: test                    - Install test tools & run tests.
+.PHONY: test
+test: automated-tests-prepare automated-tests-check automated-tests-run dbwebb-testrepo
+	@echo "$(ACTION)Installed test tools & executed tests$(NO_COLOR)"
+
+
+
+# target: dbwebb-validate     - Execute command with arg1=what.
+.PHONY: dbwebb-validate
+dbwebb-validate:
+	@echo "$(ACTION)Executed all automated tests$(NO_COLOR)"
+	$(BIN)/dbwebb-validate --publish --publish-to build/webroot/ $(arg1)
